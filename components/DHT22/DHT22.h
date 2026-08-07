@@ -15,8 +15,11 @@
 #define RELAY2_GPIO        GPIO_NUM_26
 #define PWM_GPIO           GPIO_NUM_27
 
-#define IN1_GPIO   			GPIO_NUM_21
-#define IN2_GPIO   			GPIO_NUM_22
+#define IN1_GPIO   			GPIO_NUM_18
+#define IN2_GPIO   			GPIO_NUM_19
+
+#define SDA_GPIO   			GPIO_NUM_21
+#define SCL_GPIO   			GPIO_NUM_22
 
 #define PWM_TIMER          LEDC_TIMER_0
 #define PWM_MODE           LEDC_LOW_SPEED_MODE

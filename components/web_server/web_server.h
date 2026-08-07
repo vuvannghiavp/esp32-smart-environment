@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 #include "esp_event.h"
 #include "zh_bh1750.h" 
