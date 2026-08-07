@@ -1,0 +1,2 @@
+source D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/bootloader/gdbinit/symbols
+source D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/bootloader/gdbinit/connect

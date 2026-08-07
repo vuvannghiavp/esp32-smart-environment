@@ -1,0 +1,300 @@
+Command: D:\Phanmem_espIDF\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Phanmem_espIDF\Espressif\frameworks\esp-idf-v5.5.3\tools/idf_monitor.py -p COM4 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 D:\Phanmem_espIDF\Espressif\Imic_IOT\MQTT\build\MQTT.elf D:\Phanmem_espIDF\Espressif\Imic_IOT\MQTT\build\bootloader\bootloader.elf --force-color -m 'D:\Phanmem_espIDF\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Phanmem_espIDF\Espressif\frameworks\esp-idf-v5.5.3\tools\idf.py'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x17 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6280
+load:0x40078000,len:15864
+load:0x40080400,len:3920
+entry 0x40080644
+[0;32mI (27) boot: ESP-IDF v5.5.3-dirty 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Jul 31 2026 22:10:18[0m
+[0;32mI (28) boot: Multicore bootloader[0m
+[0;32mI (29) boot: chip revision: v3.1[0m
+[0;32mI (32) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (36) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (39) boot.esp32: SPI Flash Size : 4MB[0m
+[0;32mI (43) boot: Enabling RNG early entropy source...[0m
+[0;32mI (47) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (69) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (76) boot: End of partition table[0m
+[0;32mI (79) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=244a0h (148640) map[0m
+[0;32mI (137) esp_image: segment 1: paddr=000344c8 vaddr=3ffb0000 size=04444h ( 17476) load[0m
+[0;32mI (144) esp_image: segment 2: paddr=00038914 vaddr=40080000 size=07704h ( 30468) load[0m
+[0;32mI (156) esp_image: segment 3: paddr=00040020 vaddr=400d0020 size=91efch (597756) map[0m
+[0;32mI (361) esp_image: segment 4: paddr=000d1f24 vaddr=40087704 size=10ce0h ( 68832) load[0m
+[0;32mI (388) esp_image: segment 5: paddr=000e2c0c vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (400) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (400) boot: Disabling RNG early entropy source...[0m
+[0;32mI (410) cpu_start: Multicore app[0m
+[0;32mI (419) cpu_start: GPIO 3 and 1 are used as console UART I/O pins[0m
+[0;32mI (419) cpu_start: Pro cpu start user code[0m
+[0;32mI (419) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (421) app_init: Application information:[0m
+[0;32mI (425) app_init: Project name:     MQTT[0m
+[0;32mI (428) app_init: App version:      1[0m
+[0;32mI (432) app_init: Compile time:     Jul 31 2026 22:14:39[0m
+[0;32mI (437) app_init: ELF file SHA256:  52b69e74f...[0m
+[0;32mI (441) app_init: ESP-IDF:          v5.5.3-dirty[0m
+[0;32mI (445) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (449) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (453) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (457) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (464) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (468) heap_init: At 3FFB87E0 len 00027820 (158 KiB): DRAM[0m
+[0;32mI (474) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (479) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (485) heap_init: At 400983E4 len 00007C1C (31 KiB): IRAM[0m
+[0;32mI (491) spi_flash: detected chip: boya[0m
+[0;32mI (493) spi_flash: flash io: dio[0m
+[0;32mI (497) main_task: Started on CPU0[0m
+[0;32mI (507) main_task: Calling app_main()[0m
+[0;32mI (527) example: ESP_WIFI_MODE_STA[0m
+[0;32mI (537) wifi:wifi driver task: 3ffc08a0, prio:23, stack:6656, core=0[0m
+[0;32mI (547) wifi:wifi firmware version: 4df78f2[0m
+[0;32mI (547) wifi:wifi certification version: v7.0[0m
+[0;32mI (547) wifi:config NVS flash: enabled[0m
+[0;32mI (547) wifi:config nano formatting: disabled[0m
+[0;32mI (547) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (557) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (557) wifi:Init management short buffer num: 32[0m
+[0;32mI (567) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (567) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (577) wifi:Init static rx buffer num: 10[0m
+[0;32mI (577) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (577) wifi_init: rx ba win: 6[0m
+[0;32mI (587) wifi_init: accept mbox: 6[0m
+[0;32mI (587) wifi_init: tcpip mbox: 32[0m
+[0;32mI (587) wifi_init: udp mbox: 6[0m
+[0;32mI (597) wifi_init: tcp mbox: 6[0m
+[0;32mI (597) wifi_init: tcp tx win: 5760[0m
+[0;32mI (597) wifi_init: tcp rx win: 5760[0m
+[0;32mI (597) wifi_init: tcp mss: 1440[0m
+[0;32mI (607) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (607) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;33mW (617) wifi:Password length matches WPA2 standards, authmode threshold changes from OPEN to WPA2[0m
+[0;32mI (617) phy_init: phy_version 4863,a3a4459,Oct 28 2025,14:30:06[0m
+[0;32mI (707) wifi:mode : sta (30:76:f5:f7:59:14)[0m
+[0;32mI (707) wifi:enable tsf[0m
+[0;32mI (707) example: wifi_init_sta finished.[0m
+[0;32mI (727) wifi:new:<1,0>, old:<1,0>, ap:<255,255>, sta:<1,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (727) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (737) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (737) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (857) wifi:connected with Ong Hoi_EXT, aid = 3, channel 1, BW20, bssid = 20:e1:5d:f2:6d:0f[0m
+[0;32mI (857) wifi:security: WPA2-PSK, phy: bgn, rssi: -73[0m
+[0;32mI (857) wifi:pm start, type: 1[0m
+
+[0;32mI (857) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us[0m
+[0;32mI (1007) wifi:AP's beacon interval = 102400 us, DTIM period = 1[0m
+[0;32mI (2537) esp_netif_handlers: sta ip: 192.168.100.13, mask: 255.255.255.0, gw: 192.168.100.1[0m
+[0;32mI (2537) web_server: Starting webserver[0m
+[0;32mI (2537) web_server: Starting server on port: '80'[0m
+[0;32mI (2537) web_server: Registering URI handlers[0m
+[0;32mI (2547) example: got ip:192.168.100.13[0m
+[0;32mI (2547) example: connected to ap SSID:Ong Hoi_EXT password:66668888[0m
+[0;32mI (3167) wifi:<ba-add>idx:0 (ifx:0, 20:e1:5d:f2:6d:0f), tid:0, ssn:3, winSize:64[0m
+[1;31mE (3567) DHT: Sensor Timeout[0m
+
+[1;31mE (3737) DHT: Sensor Timeout[0m
+
+[1;31mE (3757) DHT: Sensor Timeout[0m
+
+[1;31mE (3767) DHT: Sensor Timeout[0m
+
+[1;31mE (4017) DHT: CheckSum error[0m
+
+[1;31mE (4047) DHT: Sensor Timeout[0m
+
+[1;31mE (4377) DHT: Sensor Timeout[0m
+
+[1;31mE (4397) DHT: Sensor Timeout[0m
+
+[1;31mE (4547) DHT: Sensor Timeout[0m
+
+[1;31mE (13117) DHT: Sensor Timeout[0m
+
+[0;32mI (14127) web_server: state=1, gpio level=0[0m
+[0;32mI (15467) web_server: state=1, gpio level=0[0m
+[0;32mI (22257) web_server: state=0, gpio level=0[0m
+[0;32mI (23657) web_server: state=0, gpio level=0[0m
+[1;31mE (46537) DHT: Sensor Timeout[0m
+
+[0;32mI (51307) web_server: state=1, gpio level=0[0m
+[0;32mI (53137) web_server: state=0, gpio level=0[0m
+[0;32mI (54177) web_server: state=1, gpio level=0[0m
+[0;32mI (56017) web_server: state=1, gpio level=0[0m
+[0;32mI (56527) web_server: state=0, gpio level=0[0m
+[0;32mI (143457) web_server: state=0, gpio level=0[0m
+[0;32mI (144007) web_server: state=1, gpio level=0[0m
+[0;32mI (144517) web_server: state=1, gpio level=0[0m
+[0;32mI (145157) web_server: state=0, gpio level=0[0m
+[0;32mI (146837) web_server: state=0, gpio level=0[0m
+[0;32mI (161377) web_server: state=1, gpio level=0[0m
+[0;32mI (162817) web_server: state=1, gpio level=0[0m
+[0;32mI (163367) web_server: state=0, gpio level=0[0m
+[0;32mI (165477) web_server: state=0, gpio level=0[0m
+[0;32mI (166387) web_server: state=1, gpio level=0[0m
+[0;32mI (167117) web_server: state=1, gpio level=0[0m
+[0;32mI (167827) web_server: state=0, gpio level=0[0m
+[0;32mI (169777) web_server: state=0, gpio level=0[0m
+[0;32mI (173257) web_server: state=1, gpio level=0[0m
+[0;32mI (174177) web_server: state=0, gpio level=0[0m
+[0;32mI (175407) web_server: state=1, gpio level=0[0m
+[0;32mI (176017) web_server: state=0, gpio level=0[0m
+[1;31mE (199477) DHT: Sensor Timeout[0m
+
+[0;32mI (219747) web_server: state=1, gpio level=0[0m
+[0;32mI (220597) web_server: state=1, gpio level=0[0m
+[0;32mI (221107) web_server: state=0, gpio level=0[0m
+[0;32mI (221787) web_server: state=0, gpio level=0[0m
+[0;32mI (271967) web_server: state=1, gpio level=0[0m
+[0;32mI (273307) web_server: state=1, gpio level=0[0m
+[0;32mI (280977) web_server: state=0, gpio level=0[0m
+[0;32mI (281627) web_server: state=0, gpio level=0[0m
+[0;32mI (381227) web_server: state=1, gpio level=0[0m
+[1;31mE (381747) DHT: Sensor Timeout[0m
+
+[0;32mI (381767) web_server: state=0, gpio level=0[0m
+[0;32mI (382967) web_server: state=1, gpio level=0[0m
+[0;32mI (383187) web_server: state=0, gpio level=0[0m
+[0;32mI (384707) web_server: state=1, gpio level=0[0m
+[0;32mI (385247) web_server: state=0, gpio level=0[0m
+[1;31mE (424247) DHT: Sensor Timeout[0m
+
+[1;31mE (451687) DHT: Sensor Timeout[0m
+
+[1;31mE (460497) DHT: Sensor Timeout[0m
+
+[1;31mE (463377) DHT: Sensor Timeout[0m
+
+[1;31mE (531867) DHT: Sensor Timeout[0m
+
+[0;32mI (532057) web_server: state=1, gpio level=0[0m
+[0;32mI (534967) web_server: state=1, gpio level=0[0m
+[0;32mI (701437) web_server: state=0, gpio level=0[0m
+[0;32mI (702147) web_server: state=0, gpio level=0[0m
+[1;31mE (855557) DHT: Sensor Timeout[0m
+
+[0;32mI (987977) web_server: state=1, gpio level=0[0m
+[0;32mI (989377) web_server: state=1, gpio level=0[0m
+[0;32mI (990807) web_server: state=0, gpio level=0[0m
+[0;32mI (991127) web_server: state=0, gpio level=0[0m
+[1;31mE (993797) DHT: Sensor Timeout[0m
+
+[1;31mE (1096907) DHT: Sensor Timeout[0m
+
+[0;32mI (1375317) web_server: state=1, gpio level=0[0m
+[0;32mI (1376537) web_server: state=1, gpio level=0[0m
+[0;32mI (1377257) web_server: state=0, gpio level=0[0m
+[1;31mE (1377877) DHT: Sensor Timeout[0m
+
+[0;32mI (1377897) web_server: state=0, gpio level=0[0m
+[1;31mE (1423247) DHT: Sensor Timeout[0m
+
+[0;32mI (1488477) web_server: state=1, gpio level=0[0m
+[0;32mI (1490307) web_server: state=1, gpio level=0[0m
+[0;32mI (1491117) web_server: state=0, gpio level=0[0m
+[0;32mI (1491637) web_server: state=0, gpio level=0[0m
+[1;31mE (1501287) DHT: Sensor Timeout[0m
+
+[1;31mE (1522347) DHT: Sensor Timeout[0m
+
+[1;31mE (1540277) DHT: Sensor Timeout[0m
+
+[1;31mE (1570387) DHT: Sensor Timeout[0m
+
+[1;31mE (1609297) DHT: Sensor Timeout[0m
+
+[1;31mE (1621277) DHT: Sensor Timeout[0m
+
+[1;31mE (2055347) DHT: Sensor Timeout[0m
+
+[1;31mE (2472817) DHT: Sensor Timeout[0m
+
+[1;31mE (2517767) DHT: Sensor Timeout[0m
+
+[0;32mI (2532937) web_server: state=1, gpio level=0[0m
+[0;32mI (2537447) web_server: state=0, gpio level=0[0m
+[0;32mI (2538037) web_server: state=1, gpio level=0[0m
+[0;32mI (2538647) web_server: state=0, gpio level=0[0m
+[0;32mI (2539477) web_server: state=1, gpio level=0[0m
+[0;32mI (2540087) web_server: state=0, gpio level=0[0m
+[0;32mI (2541107) web_server: state=1, gpio level=0[0m
+[0;32mI (2541407) web_server: state=1, gpio level=0[0m
+[0;32mI (2542167) web_server: state=0, gpio level=0[0m
+[0;32mI (2542537) web_server: state=0, gpio level=0[0m
+[1;31mE (2544817) DHT: Sensor Timeout[0m
+
+[0;32mI (2544827) web_server: state=1, gpio level=0[0m
+[0;32mI (2546637) web_server: state=1, gpio level=0[0m
+[0;32mI (2547767) web_server: state=0, gpio level=0[0m
+[0;32mI (2548277) web_server: state=1, gpio level=0[0m
+[0;32mI (2549017) web_server: state=0, gpio level=0[0m
+[0;32mI (2549407) web_server: state=0, gpio level=0[0m
+[0;33mW (2555547) httpd_txrx: httpd_sock_err: error in recv : 104[0m
+[0;33mW (2555547) httpd_txrx: httpd_sock_err: error in recv : 104[0m
+[1;31mE (2605317) DHT: Sensor Timeout[0m
+
+[1;31mE (2608397) DHT: Sensor Timeout[0m
+
+[1;31mE (2895317) DHT: Sensor Timeout[0m
+
+[1;31mE (3295437) DHT: Sensor Timeout[0m
+
+[0;32mI (3296517) web_server: state=1, gpio level=0[0m
+[1;31mE (3298087) DHT: Sensor Timeout[0m
+
+[0;32mI (3298447) web_server: state=1, gpio level=0[0m
+[0;32mI (3298617) web_server: state=0, gpio level=0[0m
+[0;32mI (3300187) web_server: state=0, gpio level=0[0m
+[1;31mE (3307817) DHT: Sensor Timeout[0m
+
+[1;31mE (3537157) DHT: Sensor Timeout[0m
+
+[0;32mI (3546867) web_server: Set PWM -> 43% (duty=439)[0m
+[0;32mI (3546907) web_server: Set PWM -> 38% (duty=388)[0m
+[1;31mE (3577507) DHT: Sensor Timeout[0m
+
+[1;31mE (3585977) DHT: Sensor Timeout[0m
+
+[0;32mI (3587207) web_server: Set PWM -> 76% (duty=777)[0m
+[0;32mI (3599707) web_server: Set PWM -> 95% (duty=971)[0m
+[0;32mI (3608817) web_server: Set PWM -> 100% (duty=1023)[0m
+[0;32mI (3618977) web_server: Set PWM -> 37% (duty=378)[0m
+[1;31mE (3624797) DHT: Sensor Timeout[0m
+
+[1;31mE (3664227) DHT: Sensor Timeout[0m
+
+[1;31mE (3696887) DHT: Sensor Timeout[0m
+
+[0;32mI (3769987) web_server: state=1, gpio level=0[0m
+[1;31mE (3772347) DHT: Sensor Timeout[0m
+
+[0;32mI (3772827) web_server: state=1, gpio level=0[0m
+[0;32mI (3774207) web_server: state=0, gpio level=0[0m
+[0;32mI (3776147) web_server: state=0, gpio level=0[0m
+[0;32mI (3778517) web_server: Set PWM -> 51% (duty=521)[0m
+[0;32mI (3780357) web_server: Set PWM -> 78% (duty=797)[0m
+[1;31mE (3780957) DHT: Sensor Timeout[0m
+
+[0;32mI (3783407) web_server: Set PWM -> 91% (duty=930)[0m
+[0;32mI (3786807) web_server: Set PWM -> 100% (duty=1023)[0m
+[0;32mI (3790697) web_server: Set PWM -> 0% (duty=0)[0m
+[0;32mI (3799717) web_server: Set PWM -> 53% (duty=542)[0m
+[0;32mI (3801737) web_server: state=1, gpio level=0[0m
+[0;32mI (3802597) web_server: state=1, gpio level=0[0m
+[0;32mI (3820877) web_server: Set PWM -> 84% (duty=859)[0m
+[0;32mI (3858167) web_server: Set PWM -> 100% (duty=1023)[0m
+[0;32mI (3868187) web_server: Set PWM -> 0% (duty=0)[0m
+[1;31mE (3879767) DHT: Sensor Timeout[0m
+
+[1;31mE (3908157) DHT: Sensor Timeout[0m
+
+[1;31mE (3919397) DHT: Sensor Timeout[0m
+

@@ -1,0 +1,21 @@
+Command: ninja all
+[1/12] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Phanmem_espIDF\Espressif\Imic_IOT\MQTT\build\bootloader\esp-idf\esptool_py && D:\Phanmem_espIDF\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/bootloader/bootloader.bin"
+Bootloader binary size 0x6630 bytes. 0x9d0 bytes (9%) free.
+[2/12] No install step for 'bootloader'
+[3/12] Completed 'bootloader'
+[4/12] Building C object esp-idf/web_server/CMakeFiles/__idf_web_server.dir/web_server.c.obj
+[5/12] Linking C static library esp-idf\web_server\libweb_server.a
+[6/12] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/mqtt.c.obj
+[7/12] Linking C static library esp-idf\main\libmain.a
+[8/12] Generating esp-idf/esp_system/ld/sections.ld
+[9/12] Building C object CMakeFiles/MQTT.elf.dir/project_elf_src_esp32.c.obj
+[10/12] Linking CXX executable MQTT.elf
+[11/12] Generating binary image from built executable
+esptool.py v4.12.dev1
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/MQTT.bin
+[12/12] C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Phanmem_espIDF\Espressif\Imic_IOT\MQTT\build\esp-idf\esptool_py && D:\Phanmem_espIDF\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/components/partition_table/check_sizes.py --offset 0x8000 partition --type app D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/partition_table/partition-table.bin D:/Phanmem_espIDF/Espressif/Imic_IOT/MQTT/build/MQTT.bin"
+MQTT.bin binary size 0xd78f0 bytes. Smallest app partition is 0x100000 bytes. 0x28710 bytes (16%) free.

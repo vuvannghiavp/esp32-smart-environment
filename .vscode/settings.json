@@ -1,0 +1,9 @@
+{
+  "idf.currentSetup": "D:\\Phanmem_espIDF\\Espressif\\frameworks\\esp-idf-v5.5.3",
+  "clangd.path": "D:\\Phanmem_espIDF\\Espressif\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=**",
+    "--compile-commands-dir=d:\\Phanmem_espIDF\\Espressif\\Imic_IOT\\MQTT\\build"
+  ]
+}

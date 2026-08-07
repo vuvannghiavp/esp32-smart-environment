@@ -1,0 +1,14 @@
+Command: ninja all
+CMake Error at D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/build.cmake:330 (message):
+  Failed to resolve component '.' required by component 'DHT22': unknown
+  name.
+Call Stack (most recent call first):
+  D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/build.cmake:373 (__build_resolve_and_add_req)
+  D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/build.cmake:374 (__build_expand_requirements)
+  D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/build.cmake:374 (__build_expand_requirements)
+  D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/build.cmake:687 (__build_expand_requirements)
+  D:/Phanmem_espIDF/Espressif/frameworks/esp-idf-v5.5.3/tools/cmake/project.cmake:741 (idf_build_process)
+  CMakeLists.txt:6 (project)
+
+
+ninja: error: rebuilding 'build.ninja': subcommand failed

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Glassmorphic Smart Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#84cc16',
+                            emerald: '#10b981',
+                            dark: '#0f172a',
+                            glass: 'rgba(255, 255, 255, 0.08)',
+                            glassBorder: 'rgba(255, 255, 255, 0.15)',
+                            cardDark: 'rgba(15, 23, 42, 0.65)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #091e14 0%, #0f172a 50%, #062117 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        /* Glassmorphism Core Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-hover:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(132, 204, 22, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(132, 204, 22, 0.15);
+        }
+
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toggle switch custom styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #84cc16;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: rgba(132, 204, 22, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #84cc16;
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-6 md:p-8 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto w-full">
+        <!-- Top Header Navigation -->
+        <header class="glass-card rounded-2xl p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-lime-500 to-emerald-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-lime-500/30">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        ESP32 Glass Control Center
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">Smart Plant & Environment Monitor (ESP-IDF API)</p>
+                </div>
+            </div>
+
+            <!-- Status Indicator Badges -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- Simulation / Real Mode Toggle -->
+                <button id="simToggleBtn" onclick="toggleSimMode()" class="glass-pill px-3 py-1.5 rounded-xl text-xs font-semibold text-amber-400 border-amber-500/30 hover:bg-amber-500/10 transition flex items-center gap-2">
+                    <i class="fa-solid fa-vial"></i>
+                    <span id="simStatusText">Mock Data: ON</span>
+                </button>
+
+                <!-- Connection Badge -->
+                <div class="glass-pill px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-semibold text-emerald-400">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span id="pingPulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span id="pingDot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span id="connText">Connected</span>
+                </div>
+
+                <!-- Last Sync Time -->
+                <div class="glass-pill px-3 py-1.5 rounded-xl text-xs text-slate-300 flex items-center gap-2">
+                    <i class="fa-regular fa-clock text-slate-400"></i>
+                    <span id="lastSync">Syncing...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+
+            <!-- Card 1: Temperature (DHT22) -->
+            <div class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Temperature (DHT22)</span>
+                        <h3 class="text-3xl font-extrabold text-white mt-1" id="tempVal">-- °C</h3>
+                    </div>
+                    <div class="p-3 bg-red-500/20 text-red-400 rounded-xl border border-red-500/30">
+                        <i class="fa-solid fa-temperature-half text-xl"></i>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Min: 0°C</span>
+                        <span id="tempStatus">Optimal</span>
+                        <span>Max: 50°C</span>
+                    </div>
+                    <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden border border-white/5">
+                        <div id="tempBar" class="bg-gradient-to-r from-amber-500 to-red-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Humidity (DHT22) -->
+            <div class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Humidity (DHT22)</span>
+                        <h3 class="text-3xl font-extrabold text-white mt-1" id="humiVal">-- %</h3>
+                    </div>
+                    <div class="p-3 bg-blue-500/20 text-blue-400 rounded-xl border border-blue-500/30">
+                        <i class="fa-solid fa-droplet text-xl"></i>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>0%</span>
+                        <span id="humiStatus">Comfortable</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden border border-white/5">
+                        <div id="humiBar" class="bg-gradient-to-r from-sky-400 to-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Light Intensity -->
+            <div class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Ambient Light</span>
+                        <h3 class="text-3xl font-extrabold text-white mt-1" id="lightVal">-- Lux</h3>
+                    </div>
+                    <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl border border-amber-500/30">
+                        <i class="fa-solid fa-sun text-xl"></i>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Low</span>
+                        <span id="lightStatus">Moderate</span>
+                        <span>Bright</span>
+                    </div>
+                    <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden border border-white/5">
+                        <div id="lightBar" class="bg-gradient-to-r from-amber-400 to-yellow-300 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Soil / Water Moisture -->
+            <div class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Soil Moisture</span>
+                        <h3 class="text-3xl font-extrabold text-white mt-1" id="soilVal">-- %</h3>
+                    </div>
+                    <div class="p-3 bg-lime-500/20 text-lime-400 rounded-xl border border-lime-500/30">
+                        <i class="fa-solid fa-seedling text-xl"></i>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Dry</span>
+                        <span id="soilStatus">Moist</span>
+                        <span>Wet</span>
+                    </div>
+                    <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden border border-white/5">
+                        <div id="soilBar" class="bg-gradient-to-r from-emerald-500 to-lime-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Middle Section: Chart + Actuator Controls -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+            
+            <!-- Realtime Chart (2 Columns) -->
+            <div class="lg:col-span-2 glass-card rounded-2xl p-5 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-lime-400"></i>
+                        <h2 class="text-base font-semibold text-white">Live Environmental History</h2>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="inline-flex items-center gap-1 text-red-400"><span class="w-2 h-2 rounded-full bg-red-400"></span> Temp (°C)</span>
+                        <span class="inline-flex items-center gap-1 text-sky-400 ml-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Humidity (%)</span>
+                    </div>
+                </div>
+                <div class="w-full h-64 sm:h-72">
+                    <canvas id="sensorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Controls & Actuators (1 Column) -->
+            <div class="glass-card rounded-2xl p-5 flex flex-col justify-between gap-4">
+                <div>
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/10">
+                        <h2 class="text-base font-semibold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-lime-400"></i>
+                            Control Center
+                        </h2>
+                        <span class="text-xs px-2 py-0.5 rounded bg-lime-500/20 text-lime-400 border border-lime-500/30">ESP32 GPIO</span>
+                    </div>
+
+                    <!-- Relay 1 Switch (Water Pump) -->
+                    <div class="glass-pill rounded-xl p-3 mb-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+                                <i class="fa-solid fa-faucet-drip"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-white">Water Pump Relay</p>
+                                <p class="text-xs text-slate-400" id="relay1Text">Status: OFF</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="relay1Toggle" class="sr-only peer" onchange="API.controlDevice('relay1', this.checked)">
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-lime-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- Relay 2 Switch (Growth Light / LED) -->
+                    <div class="glass-pill rounded-xl p-3 mb-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                                <i class="fa-solid fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-white">Growth Light LED</p>
+                                <p class="text-xs text-slate-400" id="relay2Text">Status: OFF</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="relay2Toggle" class="sr-only peer" onchange="API.controlDevice('relay2', this.checked)">
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-lime-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- PWM Dimmer Slider (Fan Speed / Light Brightness) -->
+                    <div class="glass-pill rounded-xl p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-fan text-emerald-400"></i> Fan Speed (PWM)
+                            </span>
+                            <span class="text-xs font-bold text-lime-400" id="pwmVal">75%</span>
+                        </div>
+                        <input type="range" id="pwmSlider" min="0" max="100" value="75" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-lime-400" onchange="API.setFanSpeed(this.value)">
+                    </div>
+                </div>
+
+                <!-- System Info Pill -->
+                <div class="glass-pill rounded-xl p-3 text-xs text-slate-400 flex justify-between items-center">
+                    <span><i class="fa-solid fa-microchip text-slate-500 mr-1"></i> ESP32 Free Heap:</span>
+                    <span class="font-mono text-emerald-400" id="heapText">184,240 bytes</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /**
+         * =========================================================================
+         *  ESP-IDF API CONFIGURATION & ENDPOINT DEFINITIONS (FETCH MANAGER)
+         * =========================================================================
+         */
+        const API = {
+            // ESP32 Base Server URL (Leave empty "" if hosted directly on ESP32 flash)
+            BASE_URL: "",
+            
+            // Centralized Endpoints Table
+            ENDPOINTS: {
+                GET_SENSORS: '/api/sensors',   // GET : Fetch DHT22, Lux, Moisture
+                GET_SYSTEM:  '/api/system',    // GET : Fetch RSSI, Uptime, Heap
+                SET_CONTROL: '/api/control',   // GET or POST : Device Relays/Outputs
+                SET_PWM:     '/api/pwm'        // GET or POST : Fan/Dimmer PWM Value
+            },
+
+            // Flags
+            useSimulationMode: true, // Auto fallback to mock data if ESP32 is offline
+
+            /**
+             * 1. GET Sensor Data from ESP32
+             * Endpoint: /api/sensors
+             * Returns JSON: { temp: 28.5, humi: 65, light: 450, soil: 72 }
+             */
+            async fetchSensors() {
+                if (this.useSimulationMode) {
+                    return this._generateMockSensors();
+                }
+
+                try {
+                    const response = await fetch(this.BASE_URL + this.ENDPOINTS.GET_SENSORS, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) throw new Error('Network error');
+                    return await response.json();
+                } catch (error) {
+                    console.warn('[API] Failed to fetch real sensors, falling back to mock:', error);
+                    updateConnectionStatus(false);
+                    return this._generateMockSensors();
+                }
+            },
+
+            /**
+             * 2. GET System Info from ESP32
+             * Endpoint: /api/system
+             * Returns JSON: { heap: 184512, uptime: 3600, rssi: -62 }
+             */
+            async fetchSystemInfo() {
+                if (this.useSimulationMode) {
+                    return { heap: 184240, uptime: 43200, rssi: -58 };
+                }
+
+                try {
+                    const response = await fetch(this.BASE_URL + this.ENDPOINTS.GET_SYSTEM, { method: 'GET' });
+                    return await response.json();
+                } catch (error) {
+                    return { heap: 0, uptime: 0, rssi: 0 };
+                }
+            },
+
+            /**
+             * 3. Send Control Command (Relay ON/OFF)
+             * Endpoint: /api/control?device=relay1&state=1
+             * Method: GET (or POST)
+             */
+            async controlDevice(deviceName, isEnabled) {
+                const stateVal = isEnabled ? 1 : 0;
+                console.log(`[API Sending] ${deviceName} -> ${stateVal}`);
+
+                // Update UI text immediately
+                if (deviceName === 'relay1') {
+                    document.getElementById('relay1Text').innerText = `Status: ${isEnabled ? 'ON' : 'OFF'}`;
+                } else if (deviceName === 'relay2') {
+                    document.getElementById('relay2Text').innerText = `Status: ${isEnabled ? 'ON' : 'OFF'}`;
+                }
+
+                if (this.useSimulationMode) return true;
+
+                try {
+                    const url = `${this.BASE_URL}${this.ENDPOINTS.SET_CONTROL}?device=${deviceName}&state=${stateVal}`;
+                    const res = await fetch(url, { method: 'GET' });
+                    return res.ok;
+                } catch (err) {
+                    console.error('[API Error] Device control failed:', err);
+                    return false;
+                }
+            },
+
+            /**
+             * 4. Send PWM Duty Cycle (Fan Speed / Light Dimmer)
+             * Endpoint: /api/pwm?speed=75
+             */
+            async setFanSpeed(val) {
+                document.getElementById('pwmVal').innerText = `${val}%`;
+                console.log(`[API Sending] PWM Fan Speed -> ${val}%`);
+
+                if (this.useSimulationMode) return true;
+
+                try {
+                    const url = `${this.BASE_URL}${this.ENDPOINTS.SET_PWM}?value=${val}`;
+                    const res = await fetch(url, { method: 'GET' });
+                    return res.ok;
+                } catch (err) {
+                    console.error('[API Error] PWM update failed:', err);
+                    return false;
+                }
+            },
+
+            // Mock Data Generator for Development & Offline Preview
+            _generateMockSensors() {
+                return {
+                    temp: (24 + Math.random() * 5).toFixed(1),
+                    humi: Math.floor(55 + Math.random() * 15),
+                    light: Math.floor(300 + Math.random() * 400),
+                    soil: Math.floor(60 + Math.random() * 20)
+                };
+            }
+        };
+
+        // Initialize Real-time Chart
+        let sensorChart;
+        function initChart() {
+            const ctx = document.getElementById('sensorChart').getContext('2d');
+            
+            const gradientTemp = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientTemp.addColorStop(0, 'rgba(239, 68, 68, 0.4)');
+            gradientTemp.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
+
+            const gradientHumi = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientHumi.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+            gradientHumi.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+            sensorChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Temp (°C)',
+                            data: [],
+                            borderColor: '#ef4444',
+                            backgroundColor: gradientTemp,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Humidity (%)',
+                            data: [],
+                            borderColor: '#38bdf8',
+                            backgroundColor: gradientHumi,
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update UI Dashboard with fetched sensor data
+        async function updateDashboard() {
+            const data = await API.fetchSensors();
+            const sys = await API.fetchSystemInfo();
+
+            // Update Temperature Card
+            document.getElementById('tempVal').innerText = `${data.temp} °C`;
+            const tempPercent = Math.min(Math.max((data.temp / 50) * 100, 0), 100);
+            document.getElementById('tempBar').style.width = `${tempPercent}%`;
+
+            // Update Humidity Card
+            document.getElementById('humiVal').innerText = `${data.humi} %`;
+            document.getElementById('humiBar').style.width = `${data.humi}%`;
+
+            // Update Light Card
+            document.getElementById('lightVal').innerText = `${data.light} Lux`;
+            const lightPercent = Math.min(Math.max((data.light / 1000) * 100, 0), 100);
+            document.getElementById('lightBar').style.width = `${lightPercent}%`;
+
+            // Update Soil Moisture Card
+            document.getElementById('soilVal').innerText = `${data.soil} %`;
+            document.getElementById('soilBar').style.width = `${data.soil}%`;
+
+            // Update Heap memory text
+            if (sys.heap) {
+                document.getElementById('heapText').innerText = `${sys.heap.toLocaleString()} bytes`;
+            }
+
+            // Update Chart
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            if (sensorChart.data.labels.length > 10) {
+                sensorChart.data.labels.shift();
+                sensorChart.data.datasets[0].data.shift();
+                sensorChart.data.datasets[1].data.shift();
+            }
+            sensorChart.data.labels.push(now);
+            sensorChart.data.datasets[0].data.push(data.temp);
+            sensorChart.data.datasets[1].data.push(data.humi);
+            sensorChart.update();
+
+            // Update Last Sync Time
+            document.getElementById('lastSync').innerText = now;
+            updateConnectionStatus(true);
+        }
+
+        // Helper to switch Simulation Mode
+        function toggleSimMode() {
+            API.useSimulationMode = !API.useSimulationMode;
+            const btnText = document.getElementById('simStatusText');
+            if (API.useSimulationMode) {
+                btnText.innerText = "Mock Data: ON";
+                btnText.parentElement.classList.replace('text-slate-400', 'text-amber-400');
+            } else {
+                btnText.innerText = "ESP32 Live: ON";
+                btnText.parentElement.classList.replace('text-amber-400', 'text-emerald-400');
+            }
+            updateDashboard();
+        }
+
+        function updateConnectionStatus(isOnline) {
+            const connText = document.getElementById('connText');
+            const dot = document.getElementById('pingDot');
+            const pulse = document.getElementById('pingPulse');
+
+            if (isOnline) {
+                connText.innerText = API.useSimulationMode ? "Simulation" : "ESP32 Online";
+                dot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500";
+                pulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+            } else {
+                connText.innerText = "Disconnected";
+                dot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500";
+                pulse.className = "hidden";
+            }
+        }
+
+        // Initialize App on Page Load
+        window.onload = function() {
+            initChart();
+            updateDashboard();
+            // Poll sensor data every 3 seconds
+            setInterval(updateDashboard, 3000);
+        };
+    </script>
+</body>
+</html>
+
+<!--
+================================================================================
+           TỔNG HỢP DANH SÁCH URI ENDPOINTS CHO ESP-IDF (C BACKEND)
+================================================================================
+
+Dưới đây là bảng tổng hợp các URI Handler cần khai báo trong ESP HTTP Server (`esp_http_server.h`).
+Bạn có thể copy mã cấu hình mẫu này trực tiếp vào file `main.c` của ESP32.
+
+--------------------------------------------------------------------------------
+1. DANH SÁCH ENDPOINTS:
+--------------------------------------------------------------------------------
+| Tên URI         | Phương Thức | Tên Tham Số / Query Parameters | Chuỗi Response Mẫu (JSON)                  |
+|-----------------|-------------|--------------------------------|--------------------------------------------|
+| /api/sensors    | GET         | Không có                       | {"temp":28.5,"humi":65,"light":450,"soil":72}|
+| /api/system     | GET         | Không có                       | {"heap":184240,"uptime":3600,"rssi":-62}   |
+| /api/control    | GET / POST  | ?device=[relay1|relay2]&state=[1|0] | {"status":"ok","device":"relay1","state":1} |
+| /api/pwm        | GET / POST  | ?value=[0..100]                | {"status":"ok","pwm":75}                    |
+
+--------------------------------------------------------------------------------
+2. CODE MẪU C ESP-IDF (Khai báo handlers trong C):
+--------------------------------------------------------------------------------
+
+/* Handler 1: Trả về giá trị cảm biến DHT22, Ánh sáng, Độ ẩm đất */
+static esp_err_t get_sensors_handler(httpd_req_t *req) {
+    httpd_resp_set_type(req, "application/json");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    
+    // Đọc cảm biến thực tế
+    float temp = 28.5; // dht22_read_temp();
+    float humi = 65.0; // dht22_read_humi();
+    int light = 450;   // adc_read_light();
+    int soil = 72;     // adc_read_soil();
+
+    char json_response[128];
+    snprintf(json_response, sizeof(json_response),
+             "{\"temp\":%.1f,\"humi\":%.1f,\"light\":%d,\"soil\":%d}",
+             temp, humi, light, soil);
+
+    return httpd_resp_send(req, json_response, HTTPD_RESP_USE_STRLEN);
+}
+
+/* Handler 2: Điều khiển thiết bị Relay */
+static esp_err_t set_control_handler(httpd_req_t *req) {
+    char buf[100];
+    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK) {
+        char device[16], state_str[8];
+        if (httpd_query_key_value(buf, "device", device, sizeof(device)) == ESP_OK &&
+            httpd_query_key_value(buf, "state", state_str, sizeof(state_str)) == ESP_OK) {
+            
+            int state = atoi(state_str);
+            if (strcmp(device, "relay1") == 0) {
+                gpio_set_level(GPIO_NUM_18, state); // Water Pump Pin
+            } else if (strcmp(device, "relay2") == 0) {
+                gpio_set_level(GPIO_NUM_19, state); // Growth Light Pin
+            }
+        }
+    }
+    httpd_resp_set_type(req, "application/json");
+    return httpd_resp_send(req, "{\"status\":\"ok\"}", HTTPD_RESP_USE_STRLEN);
+}
+
+/* Đăng ký URI vào HTTP Server trong ESP32 */
+void register_dashboard_uris(httpd_handle_t server) {
+    httpd_uri_t sensors_uri = {
+        .uri      = "/api/sensors",
+        .method   = HTTP_GET,
+        .handler  = get_sensors_handler,
+        .user_ctx = NULL
+    };
+    httpd_register_uri_handler(server, &sensors_uri);
+
+    httpd_uri_t control_uri = {
+        .uri      = "/api/control",
+        .method   = HTTP_GET,
+        .handler  = set_control_handler,
+        .user_ctx = NULL
+    };
+    httpd_register_uri_handler(server, &control_uri);
+}
+================================================================================
+-->
