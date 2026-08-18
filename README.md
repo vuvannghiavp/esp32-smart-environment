@@ -1,27 +1,27 @@
-# 🌱 ESP32 Smart Environment
+#  ESP32 Smart Environment
 
 An IoT-based smart environment monitoring and control system built with **ESP32 and ESP-IDF**.
 
 The system collects environmental data from sensors, provides a web-based dashboard hosted directly on the ESP32, and allows users to control external devices through GPIO and PWM.
 
-## ✨ Features
+##  Features
 
-* 🌡️ Temperature monitoring using **DHT22**
-* 💧 Humidity monitoring using **DHT22**
-* ☀️ Ambient light monitoring using **BH1750**
-* 🌱 Soil moisture monitoring interface
-* 📊 Real-time web dashboard
-* 🎛️ Remote GPIO control
-* 💡 Relay control for external devices
-* ⚡ PWM output control
-* 📡 Wi-Fi Station mode
-* 🌐 Embedded HTML dashboard served directly from ESP32
-* 🧩 Modular ESP-IDF component architecture
-* 📱 Responsive web interface for desktop and mobile browsers
+* Temperature monitoring using **DHT22**
+* Humidity monitoring using **DHT22**
+* Ambient light monitoring using **BH1750**
+* Soil moisture monitoring interface
+* Real-time web dashboard
+* Remote GPIO control
+* Relay control for external devices
+* PWM output control
+* Wi-Fi Station mode
+* Embedded HTML dashboard served directly from ESP32
+* Modular ESP-IDF component architecture
+* Responsive web interface for desktop and mobile browsers
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```text
                   ┌──────────────────┐
@@ -66,7 +66,7 @@ The system collects environmental data from sensors, provides a web-based dashbo
 
 ---
 
-## 🛠️ Hardware
+## Hardware
 
 | Component            | Function                     |
 | -------------------- | ---------------------------- |
@@ -82,7 +82,7 @@ The system collects environmental data from sensors, provides a web-based dashbo
 
 ---
 
-## 💻 Software Stack
+## Software Stack
 
 * **MCU:** ESP32
 * **Framework:** ESP-IDF
@@ -92,15 +92,11 @@ The system collects environmental data from sensors, provides a web-based dashbo
 * **Web server:** ESP-IDF HTTP Server
 * **JSON:** cJSON
 * **Frontend:** HTML / JavaScript
-* **CSS framework:** Tailwind CSS
-* **Chart:** Chart.js
-* **Icons:** Font Awesome
-
 The project uses ESP-IDF's component-based architecture. The main component requires `web_server`, `nvs_flash`, `esp-tls`, `esp_eth`, and `configurate`.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 esp32-smart-environment/
@@ -138,7 +134,7 @@ The current repository contains separate components for BH1750, DHT22, configura
 
 ---
 
-# 🌐 Web Dashboard
+# Web Dashboard
 
 The ESP32 hosts the dashboard directly through its HTTP server.
 
@@ -165,7 +161,7 @@ The dashboard uses Tailwind CSS, Chart.js, Font Awesome and JavaScript.
 
 ---
 
-# 🔌 REST API
+# REST API
 
 The ESP32 HTTP server exposes several API endpoints.
 
@@ -219,12 +215,6 @@ The ESP32 receives the command and changes the corresponding GPIO output.
 GET /api/pwm?value=50
 ```
 
-Where:
-
-```text
-value = 0 ... 100
-```
-
 Example:
 
 ```text
@@ -261,7 +251,7 @@ The endpoint provides:
 
 ---
 
-# 🔄 Data Flow
+# Data Flow
 
 ### Sensor monitoring
 
@@ -337,7 +327,7 @@ Web Dashboard
 
 ---
 
-# 📡 Wi-Fi
+# Wi-Fi
 
 The ESP32 operates in **Wi-Fi Station mode**.
 
@@ -354,7 +344,7 @@ The code also handles Wi-Fi disconnection and retries the connection up to the c
 
 ---
 
-# 🌐 HTTP Server Lifecycle
+# HTTP Server Lifecycle
 
 The web server is intentionally tied to the Wi-Fi connection.
 
@@ -388,98 +378,7 @@ Serve Dashboard + API
 When Wi-Fi is disconnected, the HTTP server is stopped. When a new IP address is obtained, the server is started again.
 
 ---
-
-# 🚀 Getting Started
-
-## 1. Requirements
-
-Install:
-
-* ESP-IDF
-* ESP-IDF compatible toolchain
-* Git
-* USB driver for your ESP32 board
-
-Recommended environment:
-
-```text
-ESP-IDF
-VS Code
-ESP-IDF Extension
-```
-
----
-
-## 2. Clone Repository
-
-```bash
-git clone https://github.com/vuvannghiavp/esp32-smart-environment.git
-cd esp32-smart-environment
-```
-
----
-
-## 3. Configure Project
-
-Configure Wi-Fi parameters through the ESP-IDF configuration system.
-
-The project defines configuration options through:
-
-```text
-main/Kconfig.projbuild
-```
-
-The firmware uses configuration values such as:
-
-```text
-CONFIG_ESP_WIFI_SSID
-CONFIG_ESP_WIFI_PASSWORD
-CONFIG_ESP_MAXIMUM_RETRY
-```
-
----
-
-## 4. Build
-
-```bash
-idf.py build
-```
-
----
-
-## 5. Flash
-
-Connect the ESP32 to your computer and run:
-
-```bash
-idf.py -p COMx flash
-```
-
-Replace `COMx` with the correct serial port.
-
-For example:
-
-```bash
-idf.py -p COM5 flash
-```
-
----
-
-## 6. Monitor Serial Output
-
-```bash
-idf.py monitor
-```
-
-Or build, flash and monitor in one command:
-
-```bash
-idf.py -p COM5 flash monitor
-```
-
----
-
-# 📊 Dashboard Usage
+# Dashboard Usage
 
 After the ESP32 connects to Wi-Fi, the serial monitor will show its IP address.
 
@@ -496,81 +395,5 @@ http://192.168.1.100/
 ```
 
 The dashboard will then communicate directly with the ESP32 HTTP server.
-
 ---
 
-# 🔐 Security Note
-
-This project is intended primarily for **learning and prototyping**.
-
-The current HTTP API allows device control through HTTP requests and should therefore **not be exposed directly to the public Internet** without additional security measures.
-
-For a production IoT system, consider adding:
-
-* HTTPS/TLS
-* Authentication
-* Authorization
-* MQTT over TLS
-* Secure credential storage
-* Network segmentation
-* Input validation
-* Secure OTA update mechanism
-
----
-
-# 🔮 Future Development
-
-Possible improvements include:
-
-* [ ] MQTT communication
-* [ ] AWS IoT Core integration
-* [ ] Mobile application
-* [ ] Remote control over the Internet
-* [ ] Historical sensor data storage
-* [ ] OTA firmware update
-* [ ] BLE Wi-Fi provisioning
-* [ ] HTTPS/TLS
-* [ ] User authentication
-* [ ] Automatic irrigation control
-* [ ] Automatic lighting control
-* [ ] More environmental sensors
-
----
-
-# 📚 Learning Objectives
-
-This project is intended to demonstrate practical embedded and IoT concepts:
-
-* ESP32 firmware development
-* ESP-IDF
-* FreeRTOS
-* GPIO
-* PWM / LEDC
-* I2C communication
-* Sensor drivers
-* Wi-Fi Station mode
-* HTTP server
-* REST-style API
-* JSON communication
-* Embedded web server
-* HTML/CSS/JavaScript integration
-* CMake
-* ESP-IDF component architecture
-
----
-
-# 👨‍💻 Author
-
-**Vu Van Nghia**
-
-Embedded Systems & IoT
-
-GitHub:
-
-https://github.com/vuvannghiavp
-
----
-
-## 📄 License
-
-This project is for educational and personal development purposes.
